@@ -1,0 +1,91 @@
+////////k-mean/////////
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate a synthetic dataset
+np.random.seed(0)
+n_samples = 300
+n_clusters = 3
+X = np.random.rand(n_samples, 2)
+
+# Initialize cluster centers randomly
+random_indices = np.random.choice(n_samples, n_clusters, replace=False)
+centroids = X[random_indices]
+
+# Number of iterations
+n_iterations = 10
+
+# K-means algorithm
+for _ in range(n_iterations):
+    # Assign each data point to the nearest cluster
+    distances = np.sqrt(((X - centroids[:, np.newaxis]) ** 2).sum(axis=2))
+    labels = np.argmin(distances, axis=0)
+
+    # Update cluster centers as the mean of the data points assigned to them
+    for i in range(n_clusters):
+        centroids[i] = X[labels == i].mean(axis=0)
+
+# Plot the results
+colors = ['r', 'g', 'b']
+for i in range(n_clusters):
+    plt.scatter(X[labels == i][:, 0], X[labels == i][:, 1], c=colors[i], label=f'Cluster {i + 1}')
+
+plt.scatter(centroids[:, 0], centroids[:, 1], c='k', marker='x', label='Centroids')
+plt.legend()
+plt.title('K-means Clustering')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.show()
+
+##Estimated
+import numpy as np
+#define the input data(x) and output data(y)
+x=np.array([0,1,2,3,4,5,6,7,8,9])
+y=np.array([1,3,2,5,6,7,8,9,18,17])
+#calculate the means of x and y
+mean_x=np.mean(x)
+mean_y=np.mean(y)
+#calculate the numerator and denominatore of b1
+numerator=np.sum((x - mean_x)*(y -mean_y))
+denominator=np.sum((x - mean_x)**2)
+#caluculate the slope (b1)
+b1=numerator/denominator
+#alculate the intercept(b0)
+b0=mean_y -b1*mean_x
+#print the estimated coefficients
+print("Estimated Coefficient b0 (Intercept):",b0)
+print("Estimated Coefficient b1 (Slope):",b1)
+
+##naves bayes##
+import numpy as np
+from sklearn.naive_bayes import GaussianNB
+#defin the dataset
+weather=['sunny','sunny','overcast','rainy','rainy','rainy','overcast','sunny','sunny','rainy','sunny',
+         'overcast','overcast','sunny']
+
+temp=['hot','hot','hot','mild','cool','cool','cool','mild','cool','mild','mild','mild','hot','mild']
+play=['no','no','yes','yes','yes','no','yes','no','yes','yes','yes','yes','yes','no']
+ #convert categorial data to numerical values
+weather_mapping={'sunny': 0,'overcast':1,'rainy':2}
+temp_mapping={'hot':0,'mild':1,'cool':2}
+play_mapping={'no':0,'yes':1}
+weather_numeric=[weather_mapping[w] for w in weather]
+temp_numeric=[temp_mapping[t] for t in  temp]
+play_numeric=[play_mapping[p] for p in play]
+#create a feature matrix
+x=np.column_stack((weather_numeric,temp_numeric))
+#craete a target vector
+y=play_numeric
+#create a naive bayse classifier
+clf=GaussianNB()
+#fit the classifier  on the dataset
+clf.fit(x,y)
+     
+#define the tuple [0:overcast,2:mild]
+new_data=np.array([[1,2]])
+#predict whether to play sports or nop 
+presicted_class=clf.predict(new_data)
+#map the predictd class back to 'yes 'or 'no'
+predicted_play={v:k for k,v in play_mapping.items()}[presicted_class[0]]
+print(predicted_play)
+
